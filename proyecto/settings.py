@@ -63,22 +63,21 @@ WSGI_APPLICATION = 'proyecto.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
-}
+
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'gAUffUaSfDHVfKwDYgFWkIHvrgEgTbab',
-        'HOST':'mysql.railway.internal',
-        'PORT':'3306',
+        'NAME': os.getenv('MYSQL_DATABASE', 'railway'),
+        'USER': os.getenv('MYSQL_USER', 'root'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'gAUffUaSfDHVfKwDYgFWkIHvrgEgTbab'),
+        'HOST': os.getenv('MYSQL_HOST', 'mysql.railway.internal'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
 }
+
+
 
 
 # Password validation
