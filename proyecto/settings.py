@@ -69,6 +69,16 @@ DATABASES = {
         conn_max_age=600
     )
 }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'gAUffUaSfDHVfKwDYgFWkIHvrgEgTbab',
+        'HOST':'mysql.railway.internal',
+        'PORT':'3306',
+    }
+}
 
 
 # Password validation
