@@ -105,11 +105,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # En producción, usamos STATIC_ROOT para recopilar los archivos estáticos
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directorio donde se recopilarán los archivos estáticos
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Comprimir y servir los archivos estáticos
-else:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Aquí se pueden añadir archivos estáticos adicionales si es necesario.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directorio donde se recopilarán los archivos estáticos
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Comprimir y servir los archivos estáticos
 
 # Configuración para archivos multimedia
 MEDIA_URL = '/media/'
