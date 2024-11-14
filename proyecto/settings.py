@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +14,10 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-39jq&_!_$8(ulxxnrv&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['api-zsm7.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'elsol',  # Tu app personalizada
+    'elsol', 
 ]
 
 MIDDLEWARE = [
@@ -59,20 +61,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'proyecto.wsgi.application'
 
 # Database
-# Configuración de base de datos MySQL local
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'proyecto',  # Nombre de tu base de datos
-        'USER': 'root',  # Usuario de MySQL
-        'PASSWORD': 'your_password',  # Contraseña de MySQL
-        'HOST': 'localhost',  # Conexión local
-        'PORT': '3306',  # Puerto MySQL
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -90,17 +90,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 LANGUAGE_CODE = 'es-es'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+
 STATIC_URL = '/static/'
 
 # En producción, usamos STATIC_ROOT para recopilar los archivos estáticos
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directorio donde se recopilarán los archivos estáticos
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Comprimir y servir los archivos estáticos
 
 # Configuración para archivos multimedia
@@ -109,4 +115,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
