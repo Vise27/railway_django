@@ -3,6 +3,12 @@ from .models import Categoria, Empleado, Venta, Proveedor, Producto, DetalleVent
 from django.contrib.auth.models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        read_only_fields = ['username']
+        
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria

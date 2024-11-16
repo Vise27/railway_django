@@ -2,11 +2,28 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Categoria, Empleado, Venta, Proveedor, Producto, DetalleVenta, Inventario,favorito
-from .serializer import CategoriaSerializer, EmpleadoSerializer, VentaSerializer, ProveedorSerializer, ProductoSerializer, DetalleVentaSerializer, InventarioSerializer,FavoritoSerializer,RegisterSerializer
+from .models import Categoria, Empleado, Venta, Proveedor, Producto, DetalleVenta, Inventario,favorito,User
+from .serializer import UserSerializer, CategoriaSerializer, EmpleadoSerializer, VentaSerializer, ProveedorSerializer, ProductoSerializer, DetalleVentaSerializer, InventarioSerializer,FavoritoSerializer,RegisterSerializer
 
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Obtener el usuario autenticado
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
