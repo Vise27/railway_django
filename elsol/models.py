@@ -41,6 +41,7 @@ class Producto(models.Model):
 class Carrito(models.Model):
     id_carrito = models.BigAutoField(primary_key=True)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=0)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
