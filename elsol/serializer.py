@@ -1,14 +1,15 @@
 from rest_framework import serializers
-from .models import Categoria, Venta, Proveedor, Producto, DetalleVenta, favorito, Factura, Carrito
+from .models import (
+    Categoria, Venta, Proveedor, Producto, DetalleVenta, 
+    Favorito, Factura, Carrito, CarritoItem
+)
 from django.contrib.auth.models import User
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
         read_only_fields = ['username']
-
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +21,6 @@ class ProveedorSerializer(serializers.ModelSerializer):
         model = Proveedor
         fields = '__all__'
 
-
 class ProductoSerializer(serializers.ModelSerializer):
     categoria = CategoriaSerializer()  # Incluye la información de la categoría
     proveedor = ProveedorSerializer()  # Incluye la información del proveedor
@@ -29,60 +29,72 @@ class ProductoSerializer(serializers.ModelSerializer):
         model = Producto
         fields = '__all__'
 
-
-
-class VentaSerializer(serializers.ModelSerializer):
-    usuario = serializers.StringRelatedField()  # Incluye el nombre del usuario relacionado
-
-    class Meta:
-        model = Venta
-        fields = '__all__'
-
-
-class DetalleVentaSerializer(serializers.ModelSerializer):
-    producto = ProductoSerializer()  # Relación con Producto
-    venta = VentaSerializer()  # Relación con Venta
-
-    class Meta:
-        model = DetalleVenta
-        fields = '__all__'
-
-
-
-
 class FavoritoSerializer(serializers.ModelSerializer):
     producto = ProductoSerializer()  # Relación con Producto
     usuario = serializers.StringRelatedField()  # Relación con Usuario
 
     class Meta:
-        model = favorito
+        model = Favorito  # Corregido de 'favorito' a 'Favorito'
         fields = '__all__'
 
+class CarritoItemSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()
+
+    class Meta:
+        model = CarritoItem
+        fields = ['id_item', 'producto', 'cantidad', 'total_precio']
+
+class CarritoItemSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()  # Incluye detalles del producto
+
+    class Meta:
+        model = CarritoItem
+        fields = '__all__'        
 
 class CarritoSerializer(serializers.ModelSerializer):
-    usuario = serializers.StringRelatedField()  
-    producto = ProductoSerializer() 
-    cantidad = serializers.IntegerField()  
-    total = serializers.DecimalField(max_digits=10, decimal_places=2)  
+    usuario = UserSerializer()  # Mostrar los detalles del usuario
+    items = CarritoItemSerializer(many=True, read_only=True)  # Mostrar los items del carrito
+    total_carrito = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Carrito
+        fields = ['id_carrito', 'usuario', 'items', 'total_carrito', 'creado_en', 'actualizado_en']
+
+class VentaSerializer(serializers.ModelSerializer):
+    usuario = UserSerializer()  # Mostrar detalles del usuario
+    carrito = CarritoSerializer()  # Mostrar detalles del carrito
+
+    class Meta:
+        model = Venta
         fields = '__all__'
 
+    def create(self, validated_data):
+        carrito_data = validated_data.pop('carrito', None)
+        if carrito_data:
+            carrito = Carrito.objects.get(id_carrito=carrito_data['id_carrito'])
+            validated_data['total'] = carrito.total_carrito
+        return super().create(validated_data)
+
+class DetalleVentaSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()  # Relación con Producto
+
+    class Meta:
+        model = DetalleVenta
+        fields = ['codigo', 'producto', 'cantidad', 'precio_unitario', 'venta']
 
 class FacturaSerializer(serializers.ModelSerializer):
-    venta = VentaSerializer()  # Relación con Venta
-    usuario = serializers.StringRelatedField()  # Relación con el usuario (nombre de usuario)
+    carrito = CarritoSerializer()
+    usuario = UserSerializer()
 
     class Meta:
         model = Factura
         fields = '__all__'
 
-
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'email', 'first_name', 'last_name']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = User.objects.create_user(
