@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Categoria(models.Model):
     codigo = models.BigAutoField(primary_key=True)
@@ -75,17 +77,6 @@ class DetalleVenta(models.Model):
         return f"Detalle de Venta {self.codigo} - Producto: {self.producto.nombre}"
 
 
-class Inventario(models.Model):
-    id_inventario = models.BigAutoField(primary_key=True)
-    cantidad = models.PositiveIntegerField(default=0) 
-    fecha = models.DateTimeField(auto_now_add=True)  
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Inventario de {self.producto.nombre} - Cantidad: {self.cantidad}"
-    
-
-
 class Factura(models.Model):
     id_factura = models.BigAutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -96,6 +87,19 @@ class Factura(models.Model):
     
 class Registro_entrada(models.Model):
     id_reegitro = models.BigAutoField(primary_key=True)
-    provedor =  models.ForeignKey(Proveedor,on_delete=models.CASCADE) 
-    producto = models.ForeignKey(Producto,on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Registro Entrada {self.id_reegitro} - Producto: {self.producto.nombre} - Cantidad: {self.cantidad}"
+
+# Señal para actualizar el stock del producto
+@receiver(post_save, sender=Registro_entrada)
+def actualizar_stock(sender, instance, **kwargs):
+    # Obtiene el producto relacionado con el registro de entrada
+    producto = instance.producto
+    # Suma la cantidad registrada en el inventario al stock del producto
+    producto.stock += instance.cantidad
+    # Guarda los cambios en el modelo Producto
+    producto.save()

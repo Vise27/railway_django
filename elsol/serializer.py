@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Categoria, Venta, Proveedor, Producto, DetalleVenta, Inventario, favorito, Factura, Carrito
+from .models import Categoria, Venta, Proveedor, Producto, DetalleVenta, favorito, Factura, Carrito
 from django.contrib.auth.models import User
 
 
@@ -48,12 +48,6 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class InventarioSerializer(serializers.ModelSerializer):
-    producto = ProductoSerializer()  # Relación con Producto
-
-    class Meta:
-        model = Inventario
-        fields = '__all__'
 
 
 class FavoritoSerializer(serializers.ModelSerializer):

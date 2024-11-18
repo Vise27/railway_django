@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Categoria, Venta, Proveedor, Producto, DetalleVenta, Inventario, favorito, User, Carrito, Factura
-from .serializer import UserSerializer, CategoriaSerializer, VentaSerializer, ProveedorSerializer, ProductoSerializer, DetalleVentaSerializer, InventarioSerializer, FavoritoSerializer, RegisterSerializer, CarritoSerializer, FacturaSerializer
+from .models import Categoria, Venta, Proveedor, Producto, DetalleVenta, favorito, User, Carrito, Factura
+from .serializer import UserSerializer, CategoriaSerializer, VentaSerializer, ProveedorSerializer, ProductoSerializer, DetalleVentaSerializer,  FavoritoSerializer, RegisterSerializer, CarritoSerializer, FacturaSerializer
 
 
 class UserProfileView(APIView):
@@ -51,10 +51,6 @@ class DetalleVentaViewSet(viewsets.ModelViewSet):
     queryset = DetalleVenta.objects.all()
     serializer_class = DetalleVentaSerializer
 
-
-class InventarioViewSet(viewsets.ModelViewSet):
-    queryset = Inventario.objects.all()
-    serializer_class = InventarioSerializer
 
 
 class FavoritoViewSet(viewsets.ModelViewSet):
