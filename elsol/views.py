@@ -11,7 +11,7 @@ from .models import (
 from .serializer import (
     UserSerializer, CategoriaSerializer, VentaSerializer, ProveedorSerializer, 
     ProductoSerializer, DetalleVentaSerializer, FavoritoSerializer, 
-    RegisterSerializer, CarritoSerializer, FacturaSerializer,CarritoItemSerializer
+    RegisterSerializer, CarritoSerializer, FacturaSerializer, CarritoItemSerializer
 )
 
 
@@ -62,7 +62,7 @@ class DetalleVentaViewSet(viewsets.ModelViewSet):
 
 
 class FavoritoViewSet(viewsets.ModelViewSet):
-    queryset = Favorito.objects.all()  # Corregido de 'favorito' a 'Favorito'
+    queryset = Favorito.objects.all()
     serializer_class = FavoritoSerializer
     permission_classes = [IsAuthenticated]
 
@@ -80,12 +80,16 @@ class CarritoViewSet(viewsets.ModelViewSet):
         return Carrito.objects.filter(usuario=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)
+        # Evitar la creación de un carrito duplicado para el mismo usuario
+        if not Carrito.objects.filter(usuario=self.request.user).exists():
+            serializer.save(usuario=self.request.user)
+
 
 class CarritoItemViewSet(viewsets.ModelViewSet):
     queryset = CarritoItem.objects.all()
     serializer_class = CarritoItemSerializer
-    
+
+
 class FacturaViewSet(viewsets.ModelViewSet):
     queryset = Factura.objects.all()
     serializer_class = FacturaSerializer
@@ -114,8 +118,10 @@ class RegisterUserView(APIView):
             # Crear el usuario
             user = serializer.save()
             
-            # Crear el carrito asociado al usuario
-            Carrito.objects.create(usuario=user)
+            # Verificar si ya existe un carrito para el usuario
+            if not Carrito.objects.filter(usuario=user).exists():
+                # Crear el carrito asociado al usuario solo si no existe
+                Carrito.objects.create(usuario=user)
             
             # Serializar los datos del usuario
             user_data = UserSerializer(user).data
