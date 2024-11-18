@@ -130,3 +130,10 @@ def actualizar_stock(sender, instance, **kwargs):
     producto = instance.producto
     producto.stock += instance.cantidad
     producto.save()
+
+
+@receiver(post_save, sender=User)
+def crear_carrito_usuario(sender, instance, created, **kwargs):
+    if created:  # Si el usuario fue creado
+        # Crear un carrito asociado al usuario recién creado
+        Carrito.objects.create(usuario=instance)

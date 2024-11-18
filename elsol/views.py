@@ -111,10 +111,19 @@ class RegisterUserView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
+            # Crear el usuario
             user = serializer.save()
+            
+            # Crear el carrito asociado al usuario
+            Carrito.objects.create(usuario=user)
+            
+            # Serializar los datos del usuario
             user_data = UserSerializer(user).data
+            
             return Response({
                 "message": "Usuario registrado exitosamente!",
                 "user": user_data
             }, status=status.HTTP_201_CREATED)
+        
+        # Si el serializer no es válido, se devuelven los errores
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
