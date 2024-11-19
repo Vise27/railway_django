@@ -36,6 +36,7 @@ class FavoritoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorito  # Corregido de 'favorito' a 'Favorito'
         fields = '__all__'
+
 class CarritoItemSerializer(serializers.ModelSerializer):
     producto = serializers.PrimaryKeyRelatedField(queryset=Producto.objects.all())  # Relacionar solo con el ID del producto
     carrito = serializers.PrimaryKeyRelatedField(queryset=Carrito.objects.all())  # Relacionar con el carrito
@@ -47,27 +48,25 @@ class CarritoItemSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         producto = validated_data['producto']
         cantidad = validated_data['cantidad']
-        carrito = validated_data['carrito']  # Asegúrate de que carrito esté validado o proporcionado
+        carrito = validated_data['carrito']
 
         # Crear un nuevo CarritoItem
         carrito_item = CarritoItem.objects.create(
             producto=producto,
             cantidad=cantidad,
-            carrito=carrito,
-            total_precio=producto.precio * cantidad  # Suponiendo que cada producto tiene un precio
+            carrito=carrito
         )
+        # El cálculo del total_precio se realiza automáticamente al acceder a la propiedad
         return carrito_item
-
 
 class CarritoSerializer(serializers.ModelSerializer):
     usuario = UserSerializer()  # Mostrar los detalles del usuario
     items = CarritoItemSerializer(many=True, read_only=True)  # Mostrar los items del carrito
-    total_carrito = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    total_carrito = serializers.ReadOnlyField(source='total_carrito')  # Cambiar para obtener el valor de la propiedad
 
     class Meta:
         model = Carrito
         fields = ['id_carrito', 'usuario', 'items', 'total_carrito', 'creado_en', 'actualizado_en']
-
 
 class VentaSerializer(serializers.ModelSerializer):
     usuario = UserSerializer()  # Mostrar detalles del usuario
