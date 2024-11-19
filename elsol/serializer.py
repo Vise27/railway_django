@@ -62,7 +62,7 @@ class CarritoItemSerializer(serializers.ModelSerializer):
 class CarritoSerializer(serializers.ModelSerializer):
     usuario = UserSerializer()  # Mostrar los detalles del usuario
     items = CarritoItemSerializer(many=True, read_only=True)  # Mostrar los items del carrito
-    total_carrito = serializers.ReadOnlyField(source='total_carrito')  # Cambiar para obtener el valor de la propiedad
+    total_carrito = serializers.ReadOnlyField()  # Corregido: no es necesario el 'source'
 
     class Meta:
         model = Carrito
