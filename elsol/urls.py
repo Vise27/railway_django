@@ -13,8 +13,8 @@ router.register(r'proveedores', ProveedorViewSet)
 router.register(r'productos', ProductoViewSet)
 router.register(r'detalles-venta', DetalleVentaViewSet)
 router.register(r'favoritos', FavoritoViewSet)
-router.register(r'carritos', CarritoViewSet)
-router.register(r'carrito-items', CarritoItemViewSet) 
+#router.register(r'carritos', CarritoViewSet)#por mientra no esta en uso
+#router.register(r'carrito-items', CarritoItemViewSet) #por mientras no esta en uso
 router.register(r'facturas', FacturaViewSet)
 
 urlpatterns = [
