@@ -3,6 +3,8 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters
+from django.shortcuts import render
+from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -16,6 +18,14 @@ from .serializer import (
     RegisterSerializer, CarritoSerializer, FacturaSerializer, CarritoItemSerializer
 )
 
+def producto_mas_vendido_view(request):
+    producto_mas_vendido = DetalleVenta.objects.values('producto__nombre').annotate(
+        total_vendido=Sum('cantidad')
+    ).order_by('-total_vendido').first()
+
+    return render(request, 'admin/producto_mas_vendido.html', {
+        'producto_mas_vendido': producto_mas_vendido
+    })
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]

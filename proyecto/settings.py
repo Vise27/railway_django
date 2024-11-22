@@ -32,6 +32,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+JAZZMIN_SETTINGS = {
+    "custom_links": {
+        "elsol": [
+            {
+                "name": "Datos",
+                "url": "admin:producto_mas_vendido",  
+                "icon": "fas fa-chart-bar",
+                "permissions": ["auth.view_user"],
+            }
+        ]
+    },
+}
+
+
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -144,6 +161,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Asegúrate de que esté configurado correctamente
+
 
 # En producción, usamos STATIC_ROOT para recopilar los archivos estáticos
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directorio donde se recopilarán los archivos estáticos
@@ -152,6 +171,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' 
 
 # Configuración para archivos multimedia
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

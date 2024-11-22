@@ -5,6 +5,7 @@ from .views import (
     CustomTokenObtainPairView, RegisterUserView, CategoriaViewSet, 
     FavoritoViewSet, VentaViewSet, ProveedorViewSet, ProductoViewSet, DetalleVentaViewSet
 )
+from .admin import ProductoAdmin
 
 router = routers.DefaultRouter()
 router.register(r'categorias', CategoriaViewSet)
@@ -19,6 +20,7 @@ router.register(r'facturas', FacturaViewSet)
 
 urlpatterns = [
     path('', include(router.urls)), 
+    path('admin/producto_mas_vendido/', ProductoAdmin.producto_mas_vendido_view, name="producto_mas_vendido"),
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register/', RegisterUserView.as_view(), name='register_user'),
     path('user/profile/', UserProfileView.as_view(), name='user_profile'),
