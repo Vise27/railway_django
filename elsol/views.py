@@ -66,7 +66,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     filter_backends = (DjangoFilterBackend,)  
-    filterset_fields = ['codigo']
+    filterset_fields = ['codigo','categoria']
 
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     queryset = DetalleVenta.objects.all()
