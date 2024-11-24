@@ -107,13 +107,38 @@ class DetalleVenta(models.Model):
     def __str__(self):
         return f"Detalle de Venta {self.codigo} - Producto: {self.producto.nombre}"
 
+
+
 class Factura(models.Model):
     id_factura = models.BigAutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
+    fecha_emision = models.DateTimeField(default=timezone.now)
+    total = models.FloatField(null=True)
 
     def __str__(self):
         return f"Factura {self.id_factura} - Usuario: {self.usuario.username}"
+
+    @property
+    def total_factura(self):
+        detalles = self.detalles.all()
+        return sum(detalle.precio_total for detalle in detalles)
+
+class DetalleFactura(models.Model):
+    id_detalle = models.BigAutoField(primary_key=True)
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.FloatField(null=True)
+    precio_total = models.FloatField(null=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    factura = models.ForeignKey(Factura, related_name='detalles', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Detalle Factura {self.id_detalle} - Producto: {self.producto.nombre}"
+
+    def save(self, *args, **kwargs):
+        self.precio_total = self.cantidad * self.precio_unitario
+        super().save(*args, **kwargs)
+
 
 class RegistroEntrada(models.Model):
     id_registro = models.BigAutoField(primary_key=True)

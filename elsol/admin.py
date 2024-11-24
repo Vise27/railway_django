@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from django.db.models import Sum
-from .models import Categoria, Producto, Venta, DetalleVenta, Proveedor, Favorito, Carrito, Factura, RegistroEntrada, CarritoItem,User
+from .models import Categoria,DetalleFactura, Producto, Venta, DetalleVenta, Proveedor, Favorito, Carrito, Factura, RegistroEntrada, CarritoItem,User
 
 # Registrar los otros modelos
 admin.site.register(Favorito)
@@ -14,6 +14,7 @@ admin.site.register(Carrito)
 admin.site.register(CarritoItem)
 admin.site.register(Factura)
 admin.site.register(RegistroEntrada)
+admin.site.register(DetalleFactura)
 
 # ProductoAdmin con la vista personalizada
 
