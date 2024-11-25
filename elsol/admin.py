@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from django.db.models import Sum
-from .models import Categoria,DetalleFactura, Producto, Venta, DetalleVenta, Proveedor, Favorito, Carrito, Factura, RegistroEntrada, CarritoItem,User
+from .models import Categoria,DetalleFactura,Ubicacion, Producto, Venta, DetalleVenta, Proveedor, Favorito, Carrito, Factura, RegistroEntrada, CarritoItem,User
 
 # Registrar los otros modelos
 admin.site.register(Favorito)
+admin.site.register(Ubicacion)
 admin.site.register(Categoria)
 admin.site.register(Venta)
 admin.site.register(DetalleVenta)

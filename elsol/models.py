@@ -73,21 +73,39 @@ class CarritoItem(models.Model):
             raise ValueError(f"Solo hay {self.producto.stock} unidades disponibles del producto {self.producto.nombre}.")
         super().save(*args, **kwargs)
 
+class Ubicacion(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name="ubicacion")
+    departamento = models.CharField(max_length=100)  
+    provincia = models.CharField(max_length=100)  
+    distrito = models.CharField(max_length=100)  
+    direccion = models.CharField(max_length=255)  
+
+    def __str__(self):
+        return f"Ubicación de {self.usuario.username}: {self.departamento}, {self.provincia}, {self.distrito}"
+
+
 class Venta(models.Model):
+    ESTADO_OPCIONES = [
+        ('pendiente', 'Pendiente'),
+        ('entregado', 'Entregado'),
+    ]
+    
     codigo = models.BigAutoField(primary_key=True)
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.FloatField(null=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    estado = models.CharField(max_length=20, choices=ESTADO_OPCIONES, default='pendiente')  
 
     def __str__(self):
-        return f"Venta {self.codigo} - Total: {self.total} - Usuario: {self.usuario.username}"
+        return f"Venta {self.codigo} - Estado: {self.estado} - Usuario: {self.usuario.username}"
 
     def save(self, *args, **kwargs):
-        # Calcular el total basado en los items del carrito
+
         if not self.total:
             self.total = self.carrito.total_carrito
         super().save(*args, **kwargs)
+
 
 class Favorito(models.Model):
     id = models.BigAutoField(primary_key=True)
