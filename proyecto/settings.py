@@ -34,17 +34,22 @@ INSTALLED_APPS = [
 
 
 JAZZMIN_SETTINGS = {
-    "custom_links": {
-        "elsol": [
+    'custom_links': {
+        'elsol': [
+            
             {
-                "name": "Datos",
-                "url": "admin:producto_mas_vendido",  
-                "icon": "fas fa-chart-bar",
-                "permissions": ["auth.view_user"],
-            }
-        ]
-    },
+                'name': 'DATOS',
+                'url': '/ventas_categorias',
+                'icon': 'fas fa-chart-line',
+                'permissions': ['books.view_book'],  # Si es necesario
+
+            },
+        ],
+    }
 }
+
+
+
 
 
 
@@ -96,7 +101,7 @@ ROOT_URLCONF = 'proyecto.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  
+        'DIRS': ['templates'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

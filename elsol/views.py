@@ -18,14 +18,7 @@ from .serializer import (
     RegisterSerializer, CarritoSerializer, FacturaSerializer, CarritoItemSerializer
 )
 
-def producto_mas_vendido_view(request):
-    producto_mas_vendido = DetalleVenta.objects.values('producto__nombre').annotate(
-        total_vendido=Sum('cantidad')
-    ).order_by('-total_vendido').first()
 
-    return render(request, 'admin/producto_mas_vendido.html', {
-        'producto_mas_vendido': producto_mas_vendido
-    })
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -145,3 +138,74 @@ class RegisterUserView(APIView):
         
         # Si el serializer no es válido, se devuelven los errores
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+##graficos 
+from django.db.models.functions import TruncMonth
+
+def ventas_por_mes(request):
+    # Obtener el total de ventas por mes
+    ventas_por_mes = (
+        Venta.objects
+        .annotate(month=TruncMonth('fecha'))  # Agrupar por mes
+        .values('month')  # Seleccionar solo el mes
+        .annotate(total_ventas=Sum('total'))  # Sumar el total de ventas
+        .order_by('month')  # Ordenar por mes
+    )
+
+    # Preparar los datos para el gráfico
+    meses = [venta['month'].strftime('%B %Y') for venta in ventas_por_mes]  # Formatear como nombre del mes
+    totales = [venta['total_ventas'] for venta in ventas_por_mes]  # Sumar las ventas
+
+    return render(request, 'grafico_ventas_mes.html', {
+        'meses': meses,
+        'totales': totales
+    })
+
+def ventas_por_categoria(request):
+    # Obtener el total de productos vendidos por categoría
+    ventas_por_categoria = (
+        DetalleVenta.objects
+        .values('producto__categoria__tipo')  # Agrupar por categoría
+        .annotate(total_vendido=Sum('cantidad'))  # Sumar la cantidad de productos vendidos
+        .order_by('producto__categoria__tipo')  # Ordenar por nombre de categoría
+    )
+
+    # Preparar los datos para el gráfico
+    categorias = [venta['producto__categoria__tipo'] for venta in ventas_por_categoria]
+    cantidades = [venta['total_vendido'] for venta in ventas_por_categoria]
+
+    return render(request, 'grafico_ventas.html', {
+        'categorias': categorias,
+        'cantidades': cantidades
+    })
+    
+
+def estadisticas(request):
+    # Total de usuarios
+    total_usuarios = User.objects.count()
+
+    # Producto más vendido
+    producto_mas_vendido = (
+        DetalleVenta.objects.values('producto__nombre')
+        .annotate(total_vendido=Sum('cantidad'))  # Cambiado models.Sum a Sum
+        .order_by('-total_vendido')
+        .first()
+    )
+
+    # Productos sin stock
+    productos_sin_stock = Producto.objects.filter(stock=0)
+
+    # Ventas totales
+    total_ventas = Venta.objects.count()
+
+    # Total de ingresos por ventas
+    ingresos_totales = Venta.objects.aggregate(Sum('total'))['total__sum'] or 0  # Cambiado models.Sum a Sum
+
+    context = {
+        'total_usuarios': total_usuarios,
+        'producto_mas_vendido': producto_mas_vendido,
+        'productos_sin_stock': productos_sin_stock,
+        'total_ventas': total_ventas,
+        'ingresos_totales': ingresos_totales,
+    }
+    return render(request, 'datos.html', context)

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas por Mes</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fc;
+            height: 100vh;
+            color: #444;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            display: block;
+            font-size: 1em;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+            border-left: 5px solid #3498db;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 200px;
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px; /* Espaciado entre los cuadros */
+        }
+
+        #main {
+            width: 800px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menú lateral -->
+    <div class="sidebar">
+        <a href="{% url 'admin:index' %}">Regresar al Admin</a>
+        <a href="{% url 'estadisticas' %}">Estadísticas</a>
+        <a href="{% url 'ventas_mes' %}">Ventas por mes</a>
+        <a href="{% url 'ventas_categorias' %}">Ventas por categorías</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <h1>Ventas por Mes</h1>
+        <div id="main"></div>
+    </div>
+
+    <script type="text/javascript">
+        var chart = echarts.init(document.getElementById('main'));
+
+        var option = {
+            title: {
+                text: 'Total de Ventas por Mes'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                data: {{ meses|safe }}  // Datos de los meses
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                name: 'Total de Ventas',
+                type: 'line',
+                data: {{ totales|safe }}  // Datos de las ventas totales
+            }]
+        };
+
+        chart.setOption(option);
+    </script>
+
+</body>
+</html>

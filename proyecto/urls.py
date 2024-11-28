@@ -19,9 +19,13 @@ from django.contrib import admin
 from django.urls import path, include  
 from django.conf import settings
 from django.conf.urls.static import static
+from elsol import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ventas_categorias',views.ventas_por_categoria,name='ventas_categorias'),
+    path('ventas-mes',views.ventas_por_mes,name='ventas_mes'),
+    path('estadisticas/', views.estadisticas, name='estadisticas'),
     path('api/',include('elsol.urls')),
 ]
 

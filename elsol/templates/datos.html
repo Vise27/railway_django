@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'estilos.css' %}">
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fc;
+            height: 100vh;
+            color: #444;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            display: block;
+            font-size: 1em;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+            border-left: 5px solid #3498db;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 200px;
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px; /* Espaciado entre los cuadros */
+        }
+
+        .stat-box {
+            display: inline-block;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 12px;
+            color: white;
+            width: 220px; /* Cuadros un poco más grandes */
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+            height: 150px; /* Ajusté la altura de los cuadros */
+            background: linear-gradient(135deg, #2ecc71, #16a085); /* Verde degradado más marcado */
+        }
+
+        .stat-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-box h2 {
+            margin: 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .stat-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .total-usuarios {
+            background: linear-gradient(135deg, #e74c3c, #c0392b); /* De rojo fuerte a suave */
+        }
+
+        .producto-mas-vendido {
+            background: linear-gradient(135deg, #2980b9, #3498db); /* Azul fuerte a más suave */
+        }
+
+        .productos-sin-stock {
+            background: linear-gradient(135deg, #f39c12, #f1c40f); /* Amarillo brillante de más fuerte a suave */
+        }
+
+        .total-ventas {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad); /* Morado más fuerte a suave */
+        }
+
+        .ingresos-totales {
+            background: linear-gradient(135deg, #1abc9c, #16a085); /* Turquesa de más fuerte a suave */
+        }
+
+        /* Estilos para la tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        h2.table-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Menú lateral -->
+    <div class="sidebar">
+        <a href="{% url 'admin:index' %}">Regresar al Admin</a>
+        <a href="{% url 'estadisticas' %}">Estadísticas</a>
+        <a href="{% url 'ventas_mes' %}">Ventas por mes</a>
+        <a href="{% url 'ventas_categorias' %}">Ventas por categorías</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <h1>Estadísticas del Sistema</h1>
+
+        <div class="stat-box total-usuarios">
+            <h2>Total de Usuarios</h2>
+            <p>{{ total_usuarios }}</p>
+        </div>
+
+        <div class="stat-box producto-mas-vendido">
+            <h2>Producto Más Vendido</h2>
+            <p>{{ producto_mas_vendido.producto__nombre }}</p>
+        </div>
+
+        <div class="stat-box productos-sin-stock">
+            <h2>Productos sin Stock</h2>
+            <p>{{ productos_sin_stock.count }}</p>
+        </div>
+
+        <div class="stat-box total-ventas">
+            <h2>Total de Ventas</h2>
+            <p>{{ total_ventas }}</p>
+        </div>
+
+        <div class="stat-box ingresos-totales">
+            <h2>Ingresos Totales</h2>
+            <p>{{ ingresos_totales }}</p>
+        </div>
+
+        <!-- Tabla de Productos sin Stock -->
+        <div>
+            <h2 class="table-title">Productos sin Stock</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos_sin_stock %}
+                        <tr>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.categoria.tipo }}</td>
+                            <td>{{ producto.stock }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
