@@ -5,6 +5,7 @@ from django.conf import settings  # Agregar importación de settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+    
 class Categoria(models.Model):
     codigo = models.BigAutoField(primary_key=True)
     tipo = models.CharField(max_length=255, null=True)
@@ -210,9 +211,13 @@ class DetalleRegistroSalida(models.Model):
 # Señal para actualizar el stock del producto
 @receiver(post_save, sender=RegistroEntrada)
 def actualizar_stock(sender, instance, **kwargs):
-    producto = instance.producto
-    producto.stock += instance.cantidad
-    producto.save()
+    # Obtener los detalles del registro de entrada
+    detalles = instance.detalles.all()  # Accede a los detalles relacionados con RegistroEntrada
+    for detalle in detalles:
+        # Actualiza el stock del producto
+        detalle.producto.stock += detalle.cantidad
+        detalle.producto.save()
+
 
 @receiver(post_save, sender=User)
 def crear_carrito_usuario(sender, instance, created, **kwargs):
