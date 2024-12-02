@@ -1,13 +1,16 @@
 # Usa una imagen base de Python 3.11
 FROM python:3.11-slim
 
+# Instala las herramientas necesarias para crear entornos virtuales
+RUN apt-get update && apt-get install -y python3-venv
+
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
 # Copia el archivo requirements.txt al contenedor
 COPY requirements.txt .
 
-# Instala las dependencias
+# Crea el entorno virtual y instala las dependencias
 RUN python -m venv /opt/venv && \
     /opt/venv/bin/pip install --upgrade pip && \
     /opt/venv/bin/pip install -r requirements.txt
@@ -22,4 +25,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 EXPOSE 8000
 
 # Comando por defecto para ejecutar la aplicación con Gunicorn
-CMD ["gunicorn", "proyecto.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "proyecto.wsgi:elsol", "--bind", "0.0.0.0:8000"]
