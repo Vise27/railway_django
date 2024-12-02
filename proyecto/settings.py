@@ -185,6 +185,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-ALLOWED_HOSTS=['localhost','elsol.up.railway.app']
+ALLOWED_HOSTS=['127.0.0.1','elsol.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = ['http://*','https://elsol.up.railway.app']

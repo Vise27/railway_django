@@ -83,25 +83,7 @@
             font-weight: 500;
         }
 
-        .total-usuarios {
-            background: linear-gradient(135deg, #e74c3c, #c0392b); /* De rojo fuerte a suave */
-        }
-
-        .producto-mas-vendido {
-            background: linear-gradient(135deg, #2980b9, #3498db); /* Azul fuerte a más suave */
-        }
-
-        .productos-sin-stock {
-            background: linear-gradient(135deg, #f39c12, #f1c40f); /* Amarillo brillante de más fuerte a suave */
-        }
-
-        .total-ventas {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad); /* Morado más fuerte a suave */
-        }
-
-        .ingresos-totales {
-            background: linear-gradient(135deg, #1abc9c, #16a085); /* Turquesa de más fuerte a suave */
-        }
+        
 
         /* Estilos para la tabla */
         table {
@@ -155,39 +137,33 @@
         <a href="{% url 'ventas_mes' %}">Ventas por mes</a>
         <a href="{% url 'ventas_categorias' %}">Ventas por categorías</a>
         <a href="{% url 'productos_sin_stock' %}">Productos sin stock</a>
-
     </div>
 
     <!-- Contenido principal -->
     <div class="content">
         
-
-        <div class="stat-box total-usuarios">
-            <h2>Total de Usuarios</h2>
-            <p>{{ total_usuarios }}</p>
+        <!-- Tabla de Productos sin Stock -->
+        <div>
+            <h2 class="table-title">Productos sin Stock</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos_sin_stock %}
+                        <tr>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.categoria.tipo }}</td>
+                            <td>{{ producto.stock }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-        <div class="stat-box producto-mas-vendido">
-            <h2>Producto Más Vendido</h2>
-            <p>{{ producto_mas_vendido.producto__nombre }}</p>
-        </div>
-
-        <div class="stat-box productos-sin-stock">
-            <h2>Productos sin Stock</h2>
-            <p>{{ productos_sin_stock.count }}</p>
-        </div>
-
-        <div class="stat-box total-ventas">
-            <h2>Total de Ventas</h2>
-            <p>{{ total_ventas }}</p>
-        </div>
-
-        <div class="stat-box ingresos-totales">
-            <h2>Ingresos Totales</h2>
-            <p>{{ ingresos_totales }}</p>
-        </div>
-
-        
     </div>
 
 </body>

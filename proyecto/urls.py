@@ -26,6 +26,7 @@ urlpatterns = [
     path('ventas_categorias',views.ventas_por_categoria,name='ventas_categorias'),
     path('ventas-mes',views.ventas_por_mes,name='ventas_mes'),
     path('estadisticas/', views.estadisticas, name='estadisticas'),
+    path('productos_sin_stock',views.productos_sin_stock,name='productos_sin_stock'),
     path('api/',include('elsol.urls')),
 ]
 

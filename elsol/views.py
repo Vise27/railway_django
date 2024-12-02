@@ -209,3 +209,13 @@ def estadisticas(request):
         'ingresos_totales': ingresos_totales,
     }
     return render(request, 'datos.html', context)
+
+
+
+def productos_sin_stock(request):
+    productos_sin_stock = Producto.objects.filter(stock=0)
+    
+def productos_sin_stock(request):
+    productos_sin_stock = Producto.objects.filter(stock=0)
+    
+    return render(request, 'productos_sin_stock.html', {'productos_sin_stock': productos_sin_stock})
