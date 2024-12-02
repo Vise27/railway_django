@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-39jq&_!_$8(ulxxnrv&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['api-zsm7.onrender.com','https://elsol.up.railway.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['api-zsm7.onrender.com','elsol.up.railway.app', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -187,4 +187,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ALLOWED_HOSTS=['localhost','elsol.up.railway.app']
 
-CSRF_TRUSTED_ORIGINS =['htpp://*','https://elsol.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://*','https://elsol.up.railway.app']
