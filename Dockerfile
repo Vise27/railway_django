@@ -29,4 +29,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 EXPOSE 8000
 
 # Comando por defecto para ejecutar la aplicación con Gunicorn
-CMD ["gunicorn", "proyecto.wsgi:elsol", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "proyecto.wsgi:application", "--bind", "0.0.0.0:8000"]
