@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Instala las herramientas necesarias para crear entornos virtuales y dependencias del sistema
 RUN apt-get update && apt-get install -y \
     python3-venv \
-    libmariadb-dev \  # Cambié libmysqlclient-dev por libmariadb-dev
+    libmariadb-dev \
     build-essential \
     pkg-config
 
